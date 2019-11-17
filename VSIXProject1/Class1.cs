@@ -5,11 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,6 +31,8 @@ namespace VSIXProject1
 
             try
             {
+                // See https://github.com/eclipse/eclipse.jdt.ls for information on the server.
+                // Executable in the form of a jar from https://download.eclipse.org/jdtls/snapshots/?d
                 ProcessStartInfo info = new ProcessStartInfo();
                 info.FileName = "c:\\Program Files\\Java\\jdk-11.0.4\\bin\\java.exe";
                 info.WorkingDirectory = "c:\\Users\\kenne\\Downloads\\jls";
@@ -43,24 +40,19 @@ namespace VSIXProject1
                 info.Arguments = "-Declipse.application=org.eclipse.jdt.ls.core.id1 -Dosgi.bundles.defaultStartLevel=4 -Declipse.product=org.eclipse.jdt.ls.core.product -Dlog.level=ALL -noverify -Xmx1G -jar ./plugins/org.eclipse.equinox.launcher_1.5.600.v20191014-2022.jar -configuration ./config_win -data "
                     + workspace_path
                     + " --add-modules=ALL-SYSTEM --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED";
-
                 info.RedirectStandardInput = true;
                 info.RedirectStandardOutput = true;
                 info.UseShellExecute = false;
                 info.CreateNoWindow = true;
-
                 Process process = new Process();
                 process.StartInfo = info;
-
                 if (process.Start())
                 {
                     return new Connection(process.StandardOutput.BaseStream, process.StandardInput.BaseStream);
                 }
-
             }
             catch (Exception e)
             {
-
             }
             return null;
         }
